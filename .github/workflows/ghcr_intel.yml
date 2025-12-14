@@ -6,8 +6,14 @@ permissions:
 
 on:
   push:
-    tags:
-      - 'v*'
+    branches:
+      - custom
+    paths:
+      - 'runtime/Dockerfile.intel'
+      - 'apps/**'
+      - '.github/workflows/ghcr_intel.yml'
+      - '.github/workflows/image_base.yml'
+      - '.github/workflows/image_app.yml'
   workflow_dispatch:
 
 jobs:

@@ -6,8 +6,18 @@ permissions:
 
 on:
   push:
-    tags:
-      - 'v*'
+    branches:
+      - custom
+    paths:
+      - 'runtime/**'
+      - 'server/**'
+      - 'client/**'
+      - 'apps/**'
+      - 'utils/**'
+      - '.github/workflows/ghcr.yml'
+      - '.github/workflows/image_base.yml'
+      - '.github/workflows/image_app.yml'
+      - '.github/workflows/client_build.yml'
   workflow_dispatch:
 
 jobs:
