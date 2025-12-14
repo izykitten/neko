@@ -25,20 +25,3 @@ jobs:
         with:
           context: ./server
           platforms: linux/amd64
-
-  build-arm64:
-    name: Build arm64
-    runs-on: ubuntu-24.04-arm
-    permissions:
-      contents: read
-
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
-      - name: Build Docker image
-        uses: docker/build-push-action@v6
-        with:
-          context: ./server
-          platforms: linux/arm64
