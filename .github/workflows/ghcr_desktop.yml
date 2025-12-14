@@ -1,4 +1,4 @@
-name: Build and Push to GHCR
+name: Desktop Flavor (Standalone)
 
 permissions:
   contents: read
@@ -12,14 +12,10 @@ on:
       - custom
     paths:
       - 'runtime/**'
-      - 'server/**'
-      - 'client/**'
       - 'apps/**'
-      - 'utils/**'
-      - '.github/workflows/ghcr.yml'
+      - '.github/workflows/ghcr_desktop.yml'
       - '.github/workflows/image_base.yml'
       - '.github/workflows/image_app.yml'
-      - '.github/workflows/client_build.yml'
   workflow_dispatch:
 
 jobs:
@@ -30,20 +26,16 @@ jobs:
       platforms: linux/amd64
     secrets: inherit
 
-  build-app:
-    name: App Image
+  build-apps:
+    name: App Images
     uses: ./.github/workflows/image_app.yml
     needs: build-base
     strategy:
-      # Will build all images even if some fail.
       fail-fast: false
       matrix:
         include:
           - name: firefox
             platforms: linux/amd64
-          # Temporarily disabled due to Cloudflare blocked download link
-          #- name: waterfox
-          #  platforms: linux/amd64
           - name: chromium
             platforms: linux/amd64
           - name: google-chrome
@@ -66,9 +58,26 @@ jobs:
             platforms: linux/amd64
           - name: xfce
             platforms: linux/amd64
-          - name: kde
-            platforms: linux/amd64
     with:
       name: ${{ matrix.name }}
       platforms: ${{ matrix.platforms }}
+    secrets: inherit
+
+  build-kde:
+    name: KDE Image
+    uses: ./.github/workflows/image_app.yml
+    needs: build-base
+    with:
+      name: kde
+      platforms: linux/amd64
+    secrets: inherit
+
+  build-desktop:
+    name: Desktop Image
+    uses: ./.github/workflows/image_app.yml
+    needs: build-kde
+    with:
+      name: desktop
+      platforms: linux/amd64
+      base_image: ghcr.io/izykitten/neko/kde:latest
     secrets: inherit

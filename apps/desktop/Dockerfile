@@ -1,5 +1,6 @@
 # syntax=docker/dockerfile:1.7
-FROM ghcr.io/izykitten/neko/kde:latest
+ARG BASE_IMAGE=ghcr.io/izykitten/neko/kde:latest
+FROM $BASE_IMAGE
 
 #
 # install browsers and tools
