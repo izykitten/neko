@@ -1,5 +1,9 @@
 name: Build and Push to GHCR for Intel
 
+permissions:
+  contents: read
+  packages: write
+
 on:
   push:
     tags:
@@ -26,20 +30,48 @@ jobs:
       matrix:
         include:
           - name: firefox
+            platforms: linux/amd64
+            dockerfile: Dockerfile.intel
           # Temporarily disabled due to Cloudflare blocked download link
           #- name: waterfox
+          #  platforms: linux/amd64
+          #  dockerfile: Dockerfile.intel
           - name: chromium
+            platforms: linux/amd64
+            dockerfile: Dockerfile.intel
           - name: google-chrome
+            platforms: linux/amd64
+            dockerfile: Dockerfile.intel
           - name: ungoogled-chromium
+            platforms: linux/amd64
+            dockerfile: Dockerfile.intel
           - name: microsoft-edge
+            platforms: linux/amd64
+            dockerfile: Dockerfile.intel
           - name: brave
+            platforms: linux/amd64
+            dockerfile: Dockerfile.intel
           - name: vivaldi
+            platforms: linux/amd64
+            dockerfile: Dockerfile.intel
           - name: opera
+            platforms: linux/amd64
+            dockerfile: Dockerfile.intel
           - name: tor-browser
+            platforms: linux/amd64
+            dockerfile: Dockerfile.intel
           - name: remmina
+            platforms: linux/amd64
+            dockerfile: Dockerfile.intel
           - name: vlc
+            platforms: linux/amd64
+            dockerfile: Dockerfile.intel
           - name: xfce
+            platforms: linux/amd64
+            dockerfile: Dockerfile.intel
           - name: kde
+            platforms: linux/amd64
+            dockerfile: Dockerfile.intel
     with:
       name: ${{ matrix.name }}
       flavor: intel

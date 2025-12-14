@@ -1,5 +1,9 @@
 name: Build Base Image
 
+permissions:
+  contents: read
+  packages: write
+
 on:
   workflow_call:
     inputs:
@@ -66,7 +70,7 @@ jobs:
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
-          password: ${{ secrets.GHCR_ACCESS_TOKEN }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Generate base Dockerfile
         env:

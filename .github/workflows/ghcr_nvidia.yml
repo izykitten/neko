@@ -1,5 +1,9 @@
 name: Build and Push to GHCR for Nvidia
 
+permissions:
+  contents: read
+  packages: write
+
 on:
   push:
     tags:
@@ -26,14 +30,19 @@ jobs:
       matrix:
         include:
           - name: firefox
+            platforms: linux/amd64
             dockerfile: Dockerfile.nvidia
           - name: brave
+            platforms: linux/amd64
             dockerfile: Dockerfile.nvidia
           - name: chromium
+            platforms: linux/amd64
             dockerfile: Dockerfile.nvidia
           - name: google-chrome
+            platforms: linux/amd64
             dockerfile: Dockerfile.nvidia
           - name: microsoft-edge
+            platforms: linux/amd64
             dockerfile: Dockerfile.nvidia
     with:
       name: ${{ matrix.name }}
