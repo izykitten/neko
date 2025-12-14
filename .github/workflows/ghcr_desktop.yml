@@ -32,26 +32,10 @@ jobs:
       base_image: ghcr.io/nestybox/debian-trixie-systemd:latest
     secrets: inherit
 
-  build-kde:
-    name: KDE Image
-    uses: ./.github/workflows/image_app.yml
-    needs: build-base
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - name: kde
-            platforms: linux/amd64
-    with:
-      name: ${{ matrix.name }}
-      flavor: systemd
-      platforms: ${{ matrix.platforms }}
-    secrets: inherit
-
   build-desktop:
     name: Desktop Image
     uses: ./.github/workflows/image_app.yml
-    needs: build-kde
+    needs: build-base
     strategy:
       fail-fast: false
       matrix:
