@@ -72,3 +72,12 @@ jobs:
       name: ${{ matrix.name }}
       platforms: ${{ matrix.platforms }}
     secrets: inherit
+
+  build-desktop:
+    name: Desktop Image
+    uses: ./.github/workflows/image_app.yml
+    needs: build-app
+    with:
+      name: desktop
+      platforms: linux/amd64
+    secrets: inherit
