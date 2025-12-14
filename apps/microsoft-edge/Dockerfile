@@ -8,7 +8,6 @@ ARG API_URL="https://packages.microsoft.com/repos/edge/pool/main/m/microsoft-edg
 # install microsoft edge
 RUN --mount=type=cache,target=/var/cache/apt,sharing=locked --mount=type=cache,target=/var/lib/apt,sharing=locked \
     set -eux; \
-    rm -f /var/lib/apt/lists/lock /var/lib/apt/lists/partial/lock; \
     apt-get update; \
     #
     # fetch latest release

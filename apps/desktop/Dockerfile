@@ -8,7 +8,6 @@ SHELL ["/bin/bash", "-c"]
 RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     --mount=type=cache,target=/var/lib/apt,sharing=locked \
     set -eux; \
-    rm -f /var/lib/apt/lists/lock /var/lib/apt/lists/partial/lock; \
     apt-get update; \
     ARCH=$(dpkg --print-architecture); \
     #
@@ -36,7 +35,6 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     #
     # install Chromium
     echo "deb http://ftp.de.debian.org/debian trixie main" >> /etc/apt/sources.list; \
-    rm -f /var/lib/apt/lists/lock /var/lib/apt/lists/partial/lock; \
     apt-get update; \
     apt-get install -y --no-install-recommends chromium chromium-common chromium-sandbox; \
     #
@@ -50,7 +48,6 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
         https://brave-browser-apt-release.s3.brave.com/brave-browser-archive-keyring.gpg; \
     echo "deb [signed-by=/usr/share/keyrings/brave-browser-archive-keyring.gpg arch=${ARCH}] https://brave-browser-apt-release.s3.brave.com/ stable main" \
         | tee /etc/apt/sources.list.d/brave-browser-release.list; \
-    rm -f /var/lib/apt/lists/lock /var/lib/apt/lists/partial/lock; \
     apt-get update; \
     apt-get install -y --no-install-recommends brave-browser; \
     #
@@ -59,7 +56,6 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
         https://packages.microsoft.com/keys/microsoft.asc; \
     echo "deb [signed-by=/usr/share/keyrings/microsoft-edge-keyring.gpg arch=${ARCH}] https://packages.microsoft.com/repos/edge stable main" \
         | tee /etc/apt/sources.list.d/microsoft-edge-dev.list; \
-    rm -f /var/lib/apt/lists/lock /var/lib/apt/lists/partial/lock; \
     apt-get update; \
     apt-get install -y --no-install-recommends microsoft-edge-stable; \
     #
@@ -68,7 +64,6 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
         https://deb.opera.com/archive.key; \
     echo "deb [signed-by=/usr/share/keyrings/opera-archive-keyring.gpg] https://deb.opera.com/opera stable non-free" \
         | tee /etc/apt/sources.list.d/opera.list; \
-    rm -f /var/lib/apt/lists/lock /var/lib/apt/lists/partial/lock; \
     apt-get update; \
     apt-get install -y --no-install-recommends opera-stable; \
     #

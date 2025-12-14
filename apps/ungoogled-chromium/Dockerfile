@@ -11,7 +11,6 @@ COPY ./widevinecdm.sh /widevine.sh
 SHELL ["/bin/bash", "-c"]
 RUN --mount=type=cache,target=/var/cache/apt,sharing=locked --mount=type=cache,target=/var/lib/apt,sharing=locked \
   set -eux; \
-  rm -f /var/lib/apt/lists/lock /var/lib/apt/lists/partial/lock; \
   apt-get update; \
     apt-get install -y --no-install-recommends wget unzip libatk1.0-0 libatk-bridge2.0-0 libatomic1 \
     libcups2 libgtk-3-0t64 libnss3 libpci3 libxcomposite1 libxss1 openbox xz-utils jq; \

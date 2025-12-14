@@ -8,7 +8,6 @@ ARG SRC_URL="https://download.mozilla.org/?product=firefox-latest&os=linux64&lan
 # install xfce and firefox
 RUN --mount=type=cache,target=/var/cache/apt,sharing=locked --mount=type=cache,target=/var/lib/apt,sharing=locked \
     set -eux; \
-    rm -f /var/lib/apt/lists/lock /var/lib/apt/lists/partial/lock; \
     apt-get update; \
     apt-get install -y --no-install-recommends \
         dbus-x11 xfce4 xfce4-terminal sudo \
