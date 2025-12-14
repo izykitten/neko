@@ -110,5 +110,4 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
 
 #
 # copy configuration files
-COPY supervisord.conf /etc/neko/supervisord/kde.conf
 RUN mv /etc/neko/supervisord.dbus.conf /etc/neko/supervisord/dbus.conf
