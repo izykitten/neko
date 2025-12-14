@@ -19,13 +19,22 @@ on:
   workflow_dispatch:
 
 jobs:
+  build-base:
+    name: Base Image (SystemD)
+    uses: ./.github/workflows/image_base.yml
+    with:
+      platforms: linux/amd64
+      flavor: systemd
+    secrets: inherit
+
   build-kde:
     name: KDE Image
     uses: ./.github/workflows/image_app.yml
+    needs: build-base
     with:
       name: kde
       platforms: linux/amd64
-      base_image: ghcr.io/${{ github.repository }}/base:latest
+      base_image: ghcr.io/${{ github.repository }}/systemd-base:latest
     secrets: inherit
 
   build-desktop:
