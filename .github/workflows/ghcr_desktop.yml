@@ -12,15 +12,19 @@ on:
       - custom
     paths:
       - 'runtime/**'
+      - 'server/**'
+      - 'client/**'
       - 'apps/**'
+      - 'utils/**'
       - '.github/workflows/ghcr_desktop.yml'
       - '.github/workflows/image_base.yml'
       - '.github/workflows/image_app.yml'
+      - '.github/workflows/client_build.yml'
   workflow_dispatch:
 
 jobs:
   build-base:
-    name: Base Image (SystemD)
+    name: Base Image
     uses: ./.github/workflows/image_base.yml
     with:
       platforms: linux/amd64
@@ -31,18 +35,30 @@ jobs:
     name: KDE Image
     uses: ./.github/workflows/image_app.yml
     needs: build-base
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: kde
+            platforms: linux/amd64
     with:
-      name: kde
-      platforms: linux/amd64
-      base_image: ghcr.io/${{ github.repository }}/systemd-base:latest
+      name: ${{ matrix.name }}
+      flavor: systemd
+      platforms: ${{ matrix.platforms }}
     secrets: inherit
 
   build-desktop:
     name: Desktop Image
     uses: ./.github/workflows/image_app.yml
     needs: build-kde
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: desktop
+            platforms: linux/amd64
     with:
-      name: desktop
-      platforms: linux/amd64
-      base_image: ghcr.io/izykitten/neko/kde:latest
+      name: ${{ matrix.name }}
+      flavor: systemd
+      platforms: ${{ matrix.platforms }}
     secrets: inherit
