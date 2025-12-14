@@ -70,8 +70,7 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked --mount=type=cache,t
     }" > /etc/vulkan/icd.d/nvidia_icd.json; \
     #
     # clean up
-    apt-get clean -y; \
-    rm -rf /var/lib/apt/lists/* /var/cache/apt/*
+    apt-get clean -y
 
 #
 # add cuda to ld path, for gstreamer cuda plugins
@@ -154,8 +153,7 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked --mount=type=cache,t
         fonts-indic; \
     #
     # clean up
-    apt-get clean -y; \
-    rm -rf /var/lib/apt/lists/* /var/cache/apt/*
+    apt-get clean -y
 
 #
 # copy runtime configs

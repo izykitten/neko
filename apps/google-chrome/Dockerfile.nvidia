@@ -1,7 +1,8 @@
+# syntax=docker/dockerfile:1.7
 ARG BASE_IMAGE=ghcr.io/m1k1o/neko/nvidia-base:latest
 FROM $BASE_IMAGE
 
-# latest working version with EGL: 111.0.5563.146, revert when resolved
+# latest working version with EGL: 111.0.5563.146, revert when resolved
 # 112.0.5615.49 fails: https://github.com/VirtualGL/virtualgl/issues/229
 # google does not provide a direct link to the deb file anymore
 # ARG SRC_URL="https://dl.google.com/linux/chrome/deb/pool/main/g/google-chrome-stable/google-chrome-stable_111.0.5563.146-1_amd64.deb"
@@ -9,7 +10,10 @@ ARG SRC_URL="https://dl.google.com/linux/direct/google-chrome-stable_current_amd
 
 #
 # install google chrome
-RUN set -eux; apt-get update; \
+RUN --mount=type=cache,target=/var/cache/apt,sharing=locked --mount=type=cache,target=/var/lib/apt,sharing=locked --mount=type=tmpfs,target=/var/lib/dpkg \
+    set -eux; \
+    rm -f /var/lib/apt/lists/lock /var/lib/apt/lists/partial/lock; \
+    apt-get update; \
     wget -O /tmp/google-chrome.deb "${SRC_URL}"; \
     apt-get install -y --no-install-recommends openbox /tmp/google-chrome.deb; \
     #

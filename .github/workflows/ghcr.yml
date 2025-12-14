@@ -30,6 +30,15 @@ jobs:
       platforms: linux/amd64
     secrets: inherit
 
+  build-kde:
+    name: KDE Image
+    uses: ./.github/workflows/image_app.yml
+    needs: build-base
+    with:
+      name: kde
+      platforms: linux/amd64
+    secrets: inherit
+
   build-app:
     name: App Image
     uses: ./.github/workflows/image_app.yml
@@ -66,9 +75,17 @@ jobs:
             platforms: linux/amd64
           - name: xfce
             platforms: linux/amd64
-          - name: kde
-            platforms: linux/amd64
     with:
       name: ${{ matrix.name }}
       platforms: ${{ matrix.platforms }}
+    secrets: inherit
+
+  build-desktop:
+    name: Desktop Image (KDE-based)
+    uses: ./.github/workflows/image_app.yml
+    needs: build-kde
+    with:
+      name: desktop
+      platforms: linux/amd64
+      base_image: ghcr.io/${{ github.repository }}/kde:sha-${{ github.sha }}
     secrets: inherit

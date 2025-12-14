@@ -5,8 +5,7 @@ ENV DEBIAN_FRONTEND=noninteractive
 RUN set -eux; \
     apt-get update; \
     apt-get install -y \
-        gcc pkgconf autoconf automake libtool make xorg-dev xutils-dev \
-    && rm -rf /var/lib/apt/lists/*;
+        gcc pkgconf autoconf automake libtool make xorg-dev xutils-dev
 
 WORKDIR /app
 

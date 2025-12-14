@@ -16,8 +16,7 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked --mount=type=cache,t
         libgstreamer1.0-dev libgstreamer-plugins-base1.0-dev; \
     #
     # clean up
-    apt-get clean -y; \
-    rm -rf /var/lib/apt/lists/* /var/cache/apt/*
+    apt-get clean -y
 
 ARG GIT_COMMIT
 ARG GIT_BRANCH
