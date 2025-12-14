@@ -5,8 +5,10 @@ FROM $BASE_IMAGE
 #
 # install vivaldi
 SHELL ["/bin/bash", "-c"]
-RUN --mount=type=cache,target=/var/cache/apt --mount=type=cache,target=/var/lib/apt --mount=type=tmpfs,target=/var/lib/dpkg \
-  set -eux; apt-get update; \
+RUN --mount=type=cache,target=/var/cache/apt,sharing=locked --mount=type=cache,target=/var/lib/apt,sharing=locked --mount=type=tmpfs,target=/var/lib/dpkg \
+  set -eux; \
+  rm -f /var/lib/apt/lists/lock /var/lib/apt/lists/partial/lock; \
+  apt-get update; \
     ARCH=$(dpkg --print-architecture); \
     wget -O /tmp/vivaldi.deb "https://downloads.vivaldi.com/stable/vivaldi-stable_${ARCH}.deb"; \
     apt-get install -y --no-install-recommends wget unzip xz-utils jq openbox; \

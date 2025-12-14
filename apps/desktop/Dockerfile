@@ -7,7 +7,10 @@ FROM $BASE_IMAGE
 SHELL ["/bin/bash", "-c"]
 RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     --mount=type=cache,target=/var/lib/apt,sharing=locked \
-    set -eux; apt-get update; \
+    --mount=type=tmpfs,target=/var/lib/dpkg \
+    set -eux; \
+    rm -f /var/lib/apt/lists/lock /var/lib/apt/lists/partial/lock; \
+    apt-get update; \
     ARCH=$(dpkg --print-architecture); \
     #
     # install KDE and base dependencies
@@ -46,6 +49,7 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     #
     # install Chromium
     echo "deb http://ftp.de.debian.org/debian bookworm main" >> /etc/apt/sources.list; \
+    rm -f /var/lib/apt/lists/lock /var/lib/apt/lists/partial/lock; \
     apt-get update; \
     apt-get install -y --no-install-recommends chromium chromium-common chromium-sandbox; \
     #
@@ -59,6 +63,7 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
         https://brave-browser-apt-release.s3.brave.com/brave-browser-archive-keyring.gpg; \
     echo "deb [signed-by=/usr/share/keyrings/brave-browser-archive-keyring.gpg arch=${ARCH}] https://brave-browser-apt-release.s3.brave.com/ stable main" \
         | tee /etc/apt/sources.list.d/brave-browser-release.list; \
+    rm -f /var/lib/apt/lists/lock /var/lib/apt/lists/partial/lock; \
     apt-get update; \
     apt-get install -y --no-install-recommends brave-browser; \
     #

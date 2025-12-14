@@ -6,8 +6,10 @@ ARG API_URL="https://packages.microsoft.com/repos/edge/pool/main/m/microsoft-edg
 
 #
 # install microsoft edge
-RUN --mount=type=cache,target=/var/cache/apt --mount=type=cache,target=/var/lib/apt --mount=type=tmpfs,target=/var/lib/dpkg \
-    set -eux; apt-get update; \
+RUN --mount=type=cache,target=/var/cache/apt,sharing=locked --mount=type=cache,target=/var/lib/apt,sharing=locked --mount=type=tmpfs,target=/var/lib/dpkg \
+    set -eux; \
+    rm -f /var/lib/apt/lists/lock /var/lib/apt/lists/partial/lock; \
+    apt-get update; \
     #
     # fetch latest release
     SRC_URL="${API_URL}$(wget -O - "${API_URL}" 2>/dev/null | sed -n 's/.*href="\([^"]*\).*/\1/p' | sort --version-sort | tail -1)"; \
