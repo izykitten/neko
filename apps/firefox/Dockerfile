@@ -25,7 +25,7 @@ RUN set -eux; apt-get update; \
             SRC_URL="https://download.mozilla.org/?product=firefox-latest&os=linux64-aarch64&lang=en-US"; \
         fi; \
         if [ ! -z "${SRC_URL}" ]; then \
-            apt-get install -y --no-install-recommends xz-utils libgtk-3-0 libdbus-glib-1-2; \
+            apt-get install -y --no-install-recommends xz-utils libgtk-3-0t64 libdbus-glib-1-2; \
             wget -O /tmp/firefox-setup.tar.xz "${SRC_URL}"; \
             mkdir /usr/lib/firefox; \
             tar -xvf /tmp/firefox-setup.tar.xz -C /usr/lib; \

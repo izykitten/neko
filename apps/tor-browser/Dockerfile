@@ -4,7 +4,7 @@ FROM $BASE_IMAGE
 #
 # install dependencies
 RUN set -eux; apt-get update; \
-    apt-get install -y --no-install-recommends openbox curl xz-utils file libgtk-3-0 libdbus-glib-1-2; \
+    apt-get install -y --no-install-recommends openbox curl xz-utils file libgtk-3-0t64 libdbus-glib-1-2; \
     #
     # download TOR browser
     DOWNLOAD_URI="$(curl -s -N https://www.torproject.org/download/ | grep -Po -m 1 '(?=(dist/torbrowser)).*(?<=.tar.xz)')"; \

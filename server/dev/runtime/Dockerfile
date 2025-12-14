@@ -8,7 +8,7 @@ ARG SRC_URL="https://download.mozilla.org/?product=firefox-latest&os=linux64&lan
 RUN set -eux; apt-get update; \
     apt-get install -y --no-install-recommends \
         dbus-x11 xfce4 xfce4-terminal sudo \
-        xz-utils libgtk-3-0 libdbus-glib-1-2; \
+        xz-utils libgtk-3-0t64 libdbus-glib-1-2; \
     #
     # fetch latest firefox release
     wget -O /tmp/firefox-setup.tar.xz "${SRC_URL}"; \

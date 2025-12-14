@@ -10,7 +10,7 @@ COPY ./widevinecdm.sh /widevine.sh
 SHELL ["/bin/bash", "-c"]
 RUN set -eux; apt-get update; \
     apt-get install -y --no-install-recommends wget unzip libatk1.0-0 libatk-bridge2.0-0 libatomic1 \
-    libcups2 libgtk-3-0 libnss3 libpci3 libxcomposite1 libxss1 openbox xz-utils jq; \
+    libcups2 libgtk-3-0t64 libnss3 libpci3 libxcomposite1 libxss1 openbox xz-utils jq; \
     #
     # fetch latest release
     SRC_URL="$(wget -O - "${API_URL}" 2>/dev/null | jq -r "[.assets[] | select(.browser_download_url | contains(\"tar.xz\"))][-1] | .browser_download_url")"; \
