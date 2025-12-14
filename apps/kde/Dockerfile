@@ -28,4 +28,4 @@ RUN mkdir -p /etc/xdg; \
 #
 # copy configuation files
 COPY supervisord.conf /etc/neko/supervisord/kde.conf
-
+RUN mv /etc/neko/supervisord.dbus.conf /etc/neko/supervisord/dbus.conf
