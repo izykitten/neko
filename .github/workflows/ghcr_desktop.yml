@@ -1,0 +1,79 @@
+name: Build and Push Desktop to GHCR
+
+permissions:
+  contents: read
+  packages: write
+
+on:
+  schedule:
+    - cron: '0 */6 * * *'  # Every 6 hours
+  push:
+    branches:
+      - custom
+    paths:
+      - 'apps/desktop/**'
+      - 'apps/kde/**'
+      - '.github/workflows/ghcr_desktop.yml'
+      - '.github/workflows/image_base.yml'
+  workflow_dispatch:
+
+jobs:
+  build-desktop:
+    name: Desktop Image (KDE-based)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to the Container registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build KDE locally (load only)
+        uses: docker/build-push-action@v6
+        with:
+          context: apps/kde
+          file: apps/kde/Dockerfile
+          load: true
+          tags: local-kde:${{ github.sha }}
+          build-args: |
+            BASE_IMAGE=ghcr.io/${{ github.repository }}/base:latest
+          cache-from: type=gha,scope=app-default-kde
+          cache-to: type=gha,scope=app-default-kde,mode=max
+
+      - name: Extract metadata (tags, labels) for Desktop
+        uses: docker/metadata-action@v5
+        id: meta-desktop
+        with:
+          images: ghcr.io/${{ github.repository }}/desktop
+          tags: |
+            type=edge,branch=master
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=semver,pattern={{major}}
+            type=sha,format=long
+
+      - name: Build and push Desktop (uses local KDE)
+        uses: docker/build-push-action@v6
+        with:
+          context: apps/desktop
+          file: apps/desktop/Dockerfile
+          push: true
+          tags: ${{ steps.meta-desktop.outputs.tags }}
+          labels: ${{ steps.meta-desktop.outputs.labels }}
+          build-args: |
+            BASE_IMAGE=local-kde:${{ github.sha }}
+          platforms: linux/amd64
+          cache-from: type=gha,scope=app-default-desktop
+          cache-to: type=gha,scope=app-default-desktop,mode=max
