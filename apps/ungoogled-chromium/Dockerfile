@@ -9,7 +9,7 @@ COPY ./widevinecdm.sh /widevine.sh
 #
 # install custom chromium build from woolyss with support for hevc/x265
 SHELL ["/bin/bash", "-c"]
-RUN --mount=type=cache,target=/var/cache/apt,sharing=locked --mount=type=cache,target=/var/lib/apt,sharing=locked --mount=type=tmpfs,target=/var/lib/dpkg \
+RUN --mount=type=cache,target=/var/cache/apt,sharing=locked --mount=type=cache,target=/var/lib/apt,sharing=locked \
   set -eux; \
   rm -f /var/lib/apt/lists/lock /var/lib/apt/lists/partial/lock; \
   apt-get update; \

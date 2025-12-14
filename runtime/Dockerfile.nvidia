@@ -16,7 +16,7 @@ ENV VGL_DISPLAY=egl
 #
 # install hardware accleration dependencies
 ENV DEBIAN_FRONTEND=noninteractive
-RUN --mount=type=cache,target=/var/cache/apt,sharing=locked --mount=type=cache,target=/var/lib/apt,sharing=locked --mount=type=tmpfs,target=/var/lib/dpkg \
+RUN --mount=type=cache,target=/var/cache/apt,sharing=locked --mount=type=cache,target=/var/lib/apt,sharing=locked \
     set -eux; \
     rm -f /var/lib/apt/lists/lock /var/lib/apt/lists/partial/lock; \
     apt-get update; \
@@ -89,8 +89,8 @@ ARG USER_GID=$USER_UID
 #
 # install dependencies
 ENV DEBIAN_FRONTEND=noninteractive
-RUN --mount=type=cache,target=/var/cache/apt,sharing=locked --mount=type=cache,target=/var/lib/apt,sharing=locked --mount=type=tmpfs,target=/var/lib/dpkg \
-    set -eux; \
+RUN --mount=type=cache,target=/var/cache/apt,sharing=locked --mount=type=cache,target=/var/lib/apt,sharing=locked \\
+    set -eux; \\
     rm -f /var/lib/apt/lists/lock /var/lib/apt/lists/partial/lock; \
     apt-get update; \
     apt-get install -y --no-install-recommends \

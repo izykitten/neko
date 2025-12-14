@@ -4,9 +4,8 @@ FROM $BASE_IMAGE
 
 #
 # install dependencies
-RUN --mount=type=cache,target=/var/cache/apt,sharing=locked --mount=type=cache,target=/var/lib/apt,sharing=locked --mount=type=tmpfs,target=/var/lib/dpkg \
+RUN --mount=type=cache,target=/var/cache/apt,sharing=locked --mount=type=cache,target=/var/lib/apt,sharing=locked \
     set -eux; \
-    rm -f /var/lib/apt/lists/lock /var/lib/apt/lists/partial/lock; \
     apt-get update; \
     apt-get install -y --no-install-recommends openbox curl xz-utils file libgtk-3-0t64 libdbus-glib-1-2; \
     #
