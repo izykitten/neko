@@ -50,8 +50,7 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked --mount=type=cache,t
     #
     # clean up
     apt-get --purge autoremove -y xz-utils jq; \
-    apt-get clean -y; \
-    rm -rf /var/lib/apt/lists/* /var/cache/apt/*
+    apt-get clean -y
 
 #
 # copy configuation files

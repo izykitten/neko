@@ -11,8 +11,7 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked --mount=type=cache,t
       remmina-plugin-rdp remmina-plugin-vnc \
       remmina-plugin-x2go remmina-plugin-www; \
     # clean up
-    apt-get clean -y; \
-    rm -rf /var/lib/apt/lists/* /var/cache/apt/*
+    apt-get clean -y
 
 # copy configuation files
 COPY supervisord.conf /etc/neko/supervisord/remmina.conf

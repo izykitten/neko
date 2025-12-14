@@ -17,8 +17,7 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked --mount=type=cache,t
     apt-get install -y --no-install-recommends brave-browser; \
     #
     # clean up
-    apt-get clean -y; \
-    rm -rf /var/lib/apt/lists/* /var/cache/apt/*
+    apt-get clean -y
 
 #
 # copy configuation files
