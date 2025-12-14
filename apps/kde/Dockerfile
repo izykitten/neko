@@ -19,8 +19,9 @@ RUN --mount=type=cache,target=/var/cache/apt --mount=type=cache,target=/var/lib/
 
 #
 # disable autolock
-RUN kwriteconfig5 --file /home/neko/.config/kscreenlockerrc --group Daemon --key Autolock false; \
-    chown neko:neko /home/neko/.config/kscreenlockerrc
+RUN mkdir -p /etc/xdg; \
+    echo -e "[Daemon]\nAutolock=false" > /etc/xdg/kscreenlockerrc; \
+    chown root:root /etc/xdg/kscreenlockerrc
 
 #
 # copy configuation files
