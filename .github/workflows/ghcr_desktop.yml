@@ -29,6 +29,7 @@ jobs:
     with:
       platforms: linux/amd64
       flavor: systemd
+      base_image: ghcr.io/nestybox/debian-trixie-systemd:latest
     secrets: inherit
 
   build-kde:

@@ -87,6 +87,11 @@ COPY fontconfig/* /etc/fonts/conf.d/
 COPY fonts /usr/local/share/fonts
 
 #
+# copy entrypoint wrapper
+COPY entrypoint.sh /usr/local/bin/entrypoint.sh
+RUN chmod +x /usr/local/bin/entrypoint.sh
+
+#
 # set default envs
 ENV USER=$USERNAME
 ENV DISPLAY=:99.0
@@ -104,5 +109,5 @@ HEALTHCHECK --interval=10s --timeout=5s --retries=8 \
         exit 1
 
 #
-# run neko
-CMD ["/usr/bin/supervisord", "-c", "/etc/neko/supervisord.conf"]
+# run neko - wrapper detects systemd vs supervisord
+CMD ["/usr/local/bin/entrypoint.sh"]

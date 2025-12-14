@@ -22,6 +22,11 @@ on:
         type: string
         default: "Dockerfile"
         description: "The Dockerfile to use for building the image."
+      base_image:
+        required: false
+        type: string
+        default: ""
+        description: "Override the base image for runtime."
 
 env:
   FLAVOR_PREFIX: ${{ inputs.flavor && format('{0}-', inputs.flavor) || '' }}
@@ -85,6 +90,8 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+          build-args: |
+            BASE_IMAGE=${{ inputs.base_image }}
           platforms: ${{ inputs.platforms || 'linux/amd64' }}
           cache-from: type=gha,scope=${{ env.CACHE_SCOPE }}
           cache-to: type=gha,scope=${{ env.CACHE_SCOPE }},mode=max

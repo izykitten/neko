@@ -1,10 +1,32 @@
 # syntax=docker/dockerfile:1.7
-ARG BASE_IMAGE=ghcr.io/izykitten/neko/kde:latest
+ARG BASE_IMAGE=ghcr.io/izykitten/neko/systemd-base:latest
 FROM $BASE_IMAGE
 
 #
 # install browsers and tools
 SHELL ["/bin/bash", "-c"]
+
+#
+# install kde
+RUN --mount=type=cache,target=/var/cache/apt,sharing=locked --mount=type=cache,target=/var/lib/apt,sharing=locked \
+    set -eux; \
+    apt-get update; \
+    apt-get install -y --no-install-recommends kde-full kwin-x11 sudo; \
+    #
+    # add user to sudoers
+    usermod -aG sudo neko; \
+    echo "neko:neko" | chpasswd; \
+    echo "%sudo ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers; \
+    # clean up
+    apt remove xserver-xorg-legacy -y; \
+    apt-get clean -y
+
+#
+# disable autolock
+RUN mkdir -p /etc/xdg; \
+    echo -e "[Daemon]\nAutolock=false" > /etc/xdg/kscreenlockerrc; \
+    chown root:root /etc/xdg/kscreenlockerrc
+
 RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     --mount=type=cache,target=/var/lib/apt,sharing=locked \
     set -eux; \
@@ -106,8 +128,5 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
 RUN mv /etc/neko/supervisord.dbus.conf /etc/neko/supervisord/dbus.conf
 COPY cleanup-locks.sh /usr/local/bin/cleanup-locks.sh
 RUN chmod +x /usr/local/bin/cleanup-locks.sh
+COPY supervisord.conf /etc/neko/supervisord/kde.conf
 COPY supervisord.cleanup.conf /etc/neko/supervisord/cleanup.conf
-
-#
-# override CMD to use systemd
-CMD ["/sbin/init"]
