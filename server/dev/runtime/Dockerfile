@@ -1,3 +1,4 @@
+# syntax=docker/dockerfile:1.7
 ARG BASE_IMAGE=ghcr.io/m1k1o/neko/base:latest
 FROM $BASE_IMAGE
 
@@ -5,7 +6,8 @@ ARG SRC_URL="https://download.mozilla.org/?product=firefox-latest&os=linux64&lan
 
 #
 # install xfce and firefox
-RUN set -eux; apt-get update; \
+RUN --mount=type=cache,target=/var/cache/apt --mount=type=cache,target=/var/lib/apt --mount=type=tmpfs,target=/var/lib/dpkg \
+    set -eux; apt-get update; \
     apt-get install -y --no-install-recommends \
         dbus-x11 xfce4 xfce4-terminal sudo \
         xz-utils libgtk-3-0t64 libdbus-glib-1-2; \

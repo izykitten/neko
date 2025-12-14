@@ -1,3 +1,4 @@
+# syntax=docker/dockerfile:1.7
 ARG BASE_IMAGE=ghcr.io/m1k1o/neko/base:latest
 FROM $BASE_IMAGE
 
@@ -6,7 +7,8 @@ ARG LIBFFMPEG_API_URL="https://api.github.com/repos/nwjs-ffmpeg-prebuilt/nwjs-ff
 
 #
 # install opera
-RUN set -eux; apt-get update; \
+RUN --mount=type=cache,target=/var/cache/apt --mount=type=cache,target=/var/lib/apt --mount=type=tmpfs,target=/var/lib/dpkg \
+    set -eux; apt-get update; \
     #
     # fetch latest release
     VERSION="$(wget -O - "${API_URL}" 2>/dev/null | sed -n 's/.*href="\([^"/]*\).*/\1/p' | sort --version-sort | tail -1)"; \

@@ -14,6 +14,8 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
+    env:
+      CACHE_SCOPE: server-test
 
     steps:
       - uses: actions/checkout@v4
@@ -25,3 +27,5 @@ jobs:
         with:
           context: ./server
           platforms: linux/amd64
+          cache-from: type=gha,scope=${{ env.CACHE_SCOPE }}
+          cache-to: type=gha,scope=${{ env.CACHE_SCOPE }},mode=max

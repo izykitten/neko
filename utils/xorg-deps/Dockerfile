@@ -1,10 +1,12 @@
+# syntax=docker/dockerfile:1.7
 ARG BASE_IMAGE=debian:trixie-slim
 FROM $BASE_IMAGE AS xorg-deps
 
 WORKDIR /xorg
 
 ENV DEBIAN_FRONTEND=noninteractive
-RUN set -eux; \
+RUN --mount=type=cache,target=/var/cache/apt --mount=type=cache,target=/var/lib/apt --mount=type=tmpfs,target=/var/lib/dpkg \
+    set -eux; \
     apt-get update; \
     apt-get install -y \
         git gcc pkgconf autoconf automake libtool make xorg-dev xutils-dev \

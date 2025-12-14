@@ -1,3 +1,4 @@
+# syntax=docker/dockerfile:1.7
 ARG BASE_IMAGE=golang:1.24-trixie
 FROM $BASE_IMAGE AS server
 
@@ -6,7 +7,8 @@ WORKDIR /src
 #
 # install dependencies
 ENV DEBIAN_FRONTEND=noninteractive
-RUN set -eux; \
+RUN --mount=type=cache,target=/var/cache/apt --mount=type=cache,target=/var/lib/apt --mount=type=tmpfs,target=/var/lib/dpkg \
+    set -eux; \
     apt-get update; \
     apt-get install -y --no-install-recommends \
         libx11-dev libxrandr-dev libxtst-dev libgtk-3-dev libxcvt-dev \

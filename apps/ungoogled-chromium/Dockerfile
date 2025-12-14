@@ -1,3 +1,4 @@
+# syntax=docker/dockerfile:1.7
 ARG BASE_IMAGE=ghcr.io/m1k1o/neko/base:latest
 FROM $BASE_IMAGE
 
@@ -8,7 +9,8 @@ COPY ./widevinecdm.sh /widevine.sh
 #
 # install custom chromium build from woolyss with support for hevc/x265
 SHELL ["/bin/bash", "-c"]
-RUN set -eux; apt-get update; \
+RUN --mount=type=cache,target=/var/cache/apt --mount=type=cache,target=/var/lib/apt --mount=type=tmpfs,target=/var/lib/dpkg \
+  set -eux; apt-get update; \
     apt-get install -y --no-install-recommends wget unzip libatk1.0-0 libatk-bridge2.0-0 libatomic1 \
     libcups2 libgtk-3-0t64 libnss3 libpci3 libxcomposite1 libxss1 openbox xz-utils jq; \
     #

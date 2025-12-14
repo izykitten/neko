@@ -1,3 +1,4 @@
+# syntax=docker/dockerfile:1.7
 ARG UBUNTU_RELEASE=24.04
 ARG CUDA_VERSION=12.5.1
 ARG VIRTUALGL_VERSION=3.1.3-20250409
@@ -15,7 +16,8 @@ ENV VGL_DISPLAY=egl
 #
 # install hardware accleration dependencies
 ENV DEBIAN_FRONTEND=noninteractive
-RUN set -eux; \
+RUN --mount=type=cache,target=/var/cache/apt --mount=type=cache,target=/var/lib/apt --mount=type=tmpfs,target=/var/lib/dpkg \
+    set -eux; \
     apt-get update; \
     apt-get install -y --no-install-recommends \
         wget gpg ca-certificates \
@@ -87,7 +89,8 @@ ARG USER_GID=$USER_UID
 #
 # install dependencies
 ENV DEBIAN_FRONTEND=noninteractive
-RUN set -eux; \
+RUN --mount=type=cache,target=/var/cache/apt --mount=type=cache,target=/var/lib/apt --mount=type=tmpfs,target=/var/lib/dpkg \
+    set -eux; \
     apt-get update; \
     apt-get install -y --no-install-recommends \
         wget ca-certificates supervisor \
@@ -180,8 +183,8 @@ ENV NEKO_PLUGINS_DIR=/etc/neko/plugins/
 #
 # add healthcheck
 HEALTHCHECK --interval=10s --timeout=5s --retries=8 \
-    CMD wget -O - http://localhost:${NEKO_SERVER_BIND#*:}/health || \
-        wget --no-check-certificate -O - https://localhost:${NEKO_SERVER_BIND#*:}/health || \
+    CMD wget -O - http://localhost:8080/health || \
+        wget --no-check-certificate -O - https://localhost:8080/health || \
         exit 1
 
 #

@@ -1,9 +1,11 @@
+# syntax=docker/dockerfile:1.7
 ARG BASE_IMAGE=ghcr.io/m1k1o/neko/base:latest
 FROM $BASE_IMAGE
 
 #
 # install dependencies
-RUN set -eux; apt-get update; \
+RUN --mount=type=cache,target=/var/cache/apt --mount=type=cache,target=/var/lib/apt --mount=type=tmpfs,target=/var/lib/dpkg \
+    set -eux; apt-get update; \
     apt-get install -y --no-install-recommends openbox curl xz-utils file libgtk-3-0t64 libdbus-glib-1-2; \
     #
     # download TOR browser

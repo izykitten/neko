@@ -1,3 +1,4 @@
+# syntax=docker/dockerfile:1.7
 ARG BASE_IMAGE=ghcr.io/m1k1o/neko/base:latest
 FROM $BASE_IMAGE
 
@@ -5,7 +6,8 @@ ARG SRC_URL="https://dl.google.com/linux/direct/google-chrome-stable_current_amd
 
 #
 # install google chrome
-RUN set -eux; apt-get update; \
+RUN --mount=type=cache,target=/var/cache/apt --mount=type=cache,target=/var/lib/apt --mount=type=tmpfs,target=/var/lib/dpkg \
+    set -eux; apt-get update; \
     wget -O /tmp/google-chrome.deb "${SRC_URL}"; \
     apt-get install -y --no-install-recommends openbox /tmp/google-chrome.deb; \
     #
