@@ -25,7 +25,6 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
         SRC_URL="https://download.mozilla.org/?product=firefox-latest&os=linux64-aarch64&lang=en-US"; \
     fi; \
     if [ ! -z "${SRC_URL}" ]; then \
-        apt-get install -y --no-install-recommends libgtk-3-0t64 libdbus-glib-1-2; \
         wget -O /tmp/firefox-setup.tar.xz "${SRC_URL}"; \
         tar -xJf /tmp/firefox-setup.tar.xz -C /tmp; \
         mv /tmp/firefox /usr/lib/firefox; \
