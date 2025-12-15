@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:1.7
-ARG BASE_IMAGE=ghcr.io/izykitten/neko/systemd-base:latest
+ARG BASE_IMAGE=ghcr.io/izykitten/neko/base:latest
 FROM $BASE_IMAGE
 
 #
