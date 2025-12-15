@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:1.7
-ARG BASE_IMAGE=debian:trixie-slim
+ARG BASE_IMAGE=nestybox/debian-trixie-systemd:latest
 FROM $BASE_IMAGE AS runtime
 
 #
