@@ -130,3 +130,5 @@ COPY cleanup-locks.sh /usr/local/bin/cleanup-locks.sh
 RUN chmod +x /usr/local/bin/cleanup-locks.sh
 COPY supervisord.conf /etc/neko/supervisord/kde.conf
 COPY supervisord.cleanup.conf /etc/neko/supervisord/cleanup.conf
+
+CMD ["/bin/init"]

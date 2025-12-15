@@ -43,7 +43,7 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked --mount=type=cache,t
     chown $USERNAME /tmp/.X11-unix/; \
     #
     # make directories for neko
-    mkdir -p /etc/neko /etc/neko/supervisord /var/www /var/log/neko \
+    mkdir -p /etc/neko /var/www /var/log/neko \
         /tmp/runtime-$USERNAME \
         /home/$USERNAME/.config/pulse  \
         /home/$USERNAME/.local/share/xorg; \
@@ -104,5 +104,5 @@ HEALTHCHECK --interval=10s --timeout=5s --retries=8 \
         exit 1
 
 #
-# run neko - detect systemd vs supervisord
-CMD ["/bin/bash", "-c", "if [ -f /sbin/init ] && [ -x /sbin/init ]; then exec /sbin/init; else exec /usr/bin/supervisord -c /etc/neko/supervisord.conf; fi"]
+# run neko
+CMD ["/usr/bin/supervisord", "-c", "/etc/neko/supervisord.conf"]
