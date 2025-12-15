@@ -26,11 +26,6 @@ on:
         type: string
         default: "Dockerfile"
         description: "The Dockerfile to use for building the image."
-      base_image:
-        required: false
-        type: string
-        default: ""
-        description: "Override the base image. If empty, uses the flavor-prefixed base image."
 
 env:
   FLAVOR_PREFIX: ${{ inputs.flavor && format('{0}-', inputs.flavor) || '' }}
@@ -81,7 +76,7 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           build-args: |
-            BASE_IMAGE=${{ inputs.base_image || format('ghcr.io/{0}/{1}base:sha-{2}', github.repository, env.FLAVOR_PREFIX, github.sha) }}
+            BASE_IMAGE=ghcr.io/${{ github.repository }}/${{ env.FLAVOR_PREFIX }}base:sha-${{ github.sha }}
           platforms: ${{ inputs.platforms || 'linux/amd64' }}
           cache-from: type=gha,scope=${{ env.CACHE_SCOPE }}
           cache-to: type=gha,scope=${{ env.CACHE_SCOPE }},mode=max
