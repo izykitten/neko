@@ -6,6 +6,12 @@ FROM $BASE_IMAGE
 # install browsers and tools
 SHELL ["/bin/bash", "-c"]
 
+# Install systemd
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends systemd systemd-sysv && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
 #
 # install kde
 RUN --mount=type=cache,target=/var/cache/apt,sharing=locked --mount=type=cache,target=/var/lib/apt,sharing=locked \
@@ -128,5 +134,5 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
 COPY cleanup-locks.sh /usr/local/bin/cleanup-locks.sh
 RUN chmod +x /usr/local/bin/cleanup-locks.sh
 COPY supervisord.conf /etc/neko/supervisord/kde.conf
-RUN mv /etc/neko/supervisord.dbus.conf /etc/neko/supervisord/dbus.conf
+#RUN mv /etc/neko/supervisord.dbus.conf /etc/neko/supervisord/dbus.conf
 COPY supervisord.cleanup.conf /etc/neko/supervisord/cleanup.conf
