@@ -5,11 +5,9 @@ permissions:
   packages: write
 
 on:
-  #schedule:
-    #- cron: '0 */6 * * *'  # Every 6 hours
+  schedule:
+    - cron: '0 */3 * * *'
   push:
-    branches:
-      - custom
     paths:
       - 'runtime/Dockerfile.nvidia'
       - 'apps/**/*.nvidia'
