@@ -131,8 +131,9 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
 
 #
 # copy configuration files
-COPY cleanup-locks.sh /usr/local/bin/cleanup-locks.sh
-RUN chmod +x /usr/local/bin/cleanup-locks.sh
+RUN mkdir -p /etc/neko/supervisord
 COPY supervisord.conf /etc/neko/supervisord/kde.conf
-#RUN mv /etc/neko/supervisord.dbus.conf /etc/neko/supervisord/dbus.conf
+RUN mv /etc/neko/supervisord.dbus.conf /etc/neko/supervisord/dbus.conf
+COPY cleanup-locks.sh /usr/local/bin/cleanup-locks.sh
 COPY supervisord.cleanup.conf /etc/neko/supervisord/cleanup.conf
+RUN chmod +x /usr/local/bin/cleanup-locks.sh
