@@ -68,6 +68,8 @@ jobs:
             platforms: linux/amd64
           - name: kde
             platforms: linux/amd64
+          - name: desktop
+            platforms: linux/amd64
     with:
       name: ${{ matrix.name }}
       platforms: ${{ matrix.platforms }}
