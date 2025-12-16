@@ -50,8 +50,6 @@ jobs:
           - name: microsoft-edge
             platforms: linux/amd64
             dockerfile: Dockerfile.nvidia
-          - name: desktop
-            platforms: linux/amd64
     with:
       name: ${{ matrix.name }}
       flavor: nvidia
