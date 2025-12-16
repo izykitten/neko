@@ -95,14 +95,12 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     rm -f /tmp/microsoft-edge.deb; \
     #
     # install Opera
-    if [ "${ARCH}" = "amd64" ]; then \
-        OPERA_BASE_URL="https://download3.operacdn.com/pub/opera/desktop/"; \
-        OPERA_VERSION="$(wget -O - "${OPERA_BASE_URL}" 2>/dev/null | sed -n 's/.*href=\"\([0-9][^\"]*\)\/\".*/\1/p' | sort --version-sort | tail -1)"; \
-        OPERA_DEB_URL="${OPERA_BASE_URL}${OPERA_VERSION}/linux/opera-stable_${OPERA_VERSION}_amd64.deb"; \
-        wget -O /tmp/opera.deb "${OPERA_DEB_URL}"; \
-        apt-get install -y --no-install-recommends /tmp/opera.deb; \
-        rm -f /tmp/opera.deb; \
-    fi; \
+    curl -fsSLo /usr/share/keyrings/opera-archive-keyring.gpg \
+        https://deb.opera.com/archive.key; \
+    echo "deb [signed-by=/usr/share/keyrings/opera-archive-keyring.gpg] https://deb.opera.com/opera stable non-free" \
+        | tee /etc/apt/sources.list.d/opera.list; \
+    apt-get update; \
+    apt-get install -y --no-install-recommends opera-stable; \
     #
     # install Vivaldi
     wget -O /tmp/vivaldi.deb "https://downloads.vivaldi.com/stable/vivaldi-stable_${ARCH}.deb"; \
