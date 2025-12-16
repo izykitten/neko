@@ -9,12 +9,7 @@ COPY ./widevinecdm.sh /widevine.sh
 RUN --mount=type=cache,target=/var/cache/apt,sharing=locked --mount=type=cache,target=/var/lib/apt,sharing=locked \
     set -eux; \
     apt-get update; \
-    apt-get install -y --no-install-recommends software-properties-common; \
-    # chromium-browser from default repo needs snap to be installed
-    # and nvidia base is ubuntu not debian
-    add-apt-repository ppa:system76/pop; \
-    apt-get update; \
-    apt-get install -y --no-install-recommends xz-utils chromium openbox; \
+    apt-get install -y --no-install-recommends xz-utils chromium-browser openbox; \
     #
     # install widevine module
     CHROMIUM_DIR="/usr/lib/chromium"; \

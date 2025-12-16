@@ -60,10 +60,19 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
         ln -s /usr/lib/firefox/firefox /usr/bin/firefox; \
     fi; \
     #
-    # install Chromium
-    echo "deb http://ftp.de.debian.org/debian trixie main" >> /etc/apt/sources.list; \
-    apt-get update; \
-    apt-get install -y --no-install-recommends chromium chromium-common chromium-sandbox; \
+    # install Chromium (detect Debian vs Ubuntu)
+    . /etc/os-release; \
+    if [ "$ID" = "debian" ]; then \
+        echo "deb http://deb.debian.org/debian ${VERSION_CODENAME} main" >> /etc/apt/sources.list; \
+        apt-get update; \
+        apt-get install -y --no-install-recommends chromium chromium-common chromium-sandbox; \
+    elif [ "$ID" = "ubuntu" ]; then \
+        apt-get update; \
+        apt-get install -y --no-install-recommends chromium-browser openbox || apt-get install -y --no-install-recommends chromium openbox; \
+    else \
+        apt-get update; \
+        apt-get install -y --no-install-recommends chromium chromium-common chromium-sandbox; \
+    fi; \
     #
     # install Google Chrome
     wget -O /tmp/google-chrome.deb "https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb"; \
@@ -126,8 +135,7 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     rm -f /tmp/chromium.tar.xz; \
     #
     # clean up (keep apt cache for BuildKit)
-    apt-get --purge autoremove -y xz-utils jq bzip2 file; \
-    apt-get clean
+    apt-get --purge autoremove -y xz-utils jq bzip2 file
 
 #
 # copy configuration files

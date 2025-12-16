@@ -10,7 +10,7 @@ on:
   push:
     paths:
       - 'runtime/Dockerfile.nvidia'
-      - 'apps/**/*.nvidia'
+      - 'apps/**'
       - '.github/workflows/ghcr_nvidia.yml'
       - '.github/workflows/image_base.yml'
       - '.github/workflows/image_app.yml'
@@ -50,6 +50,8 @@ jobs:
           - name: microsoft-edge
             platforms: linux/amd64
             dockerfile: Dockerfile.nvidia
+          - name: desktop
+            platforms: linux/amd64
     with:
       name: ${{ matrix.name }}
       flavor: nvidia
