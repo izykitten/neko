@@ -39,12 +39,10 @@ jobs:
             platforms: linux/amd64
           - name: google-chrome
             platforms: linux/amd64
-
           - name: ungoogled-chromium
             platforms: linux/amd64
           - name: microsoft-edge
             platforms: linux/amd64
-
           - name: brave
             platforms: linux/amd64
           - name: vivaldi

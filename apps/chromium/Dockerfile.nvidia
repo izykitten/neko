@@ -9,10 +9,12 @@ COPY ./widevinecdm.sh /widevine.sh
 RUN --mount=type=cache,target=/var/cache/apt,sharing=locked --mount=type=cache,target=/var/lib/apt,sharing=locked \
     set -eux; \
     apt-get update; \
+    # Ubuntu-only: install Chromium and Openbox
     apt-get install -y --no-install-recommends xz-utils chromium-browser openbox; \
+    CHROMIUM_DIR="/usr/lib/chromium-browser"; \
     #
     # install widevine module
-    CHROMIUM_DIR="/usr/lib/chromium"; \
+    mkdir -p "${CHROMIUM_DIR}/WidevineCdm"; \
     ./widevine.sh "${CHROMIUM_DIR}/WidevineCdm"; \
     rm -f /widevine.sh; \
     #
