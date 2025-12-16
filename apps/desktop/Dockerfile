@@ -88,12 +88,11 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     apt-get install -y --no-install-recommends brave-browser; \
     #
     # install Microsoft Edge
-    curl -fsSLo /usr/share/keyrings/microsoft-edge-keyring.gpg \
-        https://packages.microsoft.com/keys/microsoft.asc; \
-    echo "deb [signed-by=/usr/share/keyrings/microsoft-edge-keyring.gpg arch=${ARCH}] https://packages.microsoft.com/repos/edge stable main" \
-        | tee /etc/apt/sources.list.d/microsoft-edge-dev.list; \
-    apt-get update; \
-    apt-get install -y --no-install-recommends microsoft-edge-stable; \
+    API_URL="https://packages.microsoft.com/repos/edge/pool/main/m/microsoft-edge-stable/"; \
+    SRC_URL="${API_URL}$(wget -O - "${API_URL}" 2>/dev/null | sed -n 's/.*href="\([^"]*\).*/\1/p' | sort --version-sort | tail -1)"; \
+    wget -O /tmp/microsoft-edge.deb "${SRC_URL}"; \
+    apt-get install -y --no-install-recommends /tmp/microsoft-edge.deb || true; \
+    rm -f /tmp/microsoft-edge.deb; \
     #
     # install Opera
     curl -fsSLo /usr/share/keyrings/opera-archive-keyring.gpg \
