@@ -35,21 +35,16 @@ jobs:
     uses: ./.github/workflows/image_app.yml
     needs: build-base
     strategy:
-      # Will build all images even if some fail.
       fail-fast: false
       matrix:
         include:
           - name: firefox
-          # Temporarily disabled due to Cloudflare blocked download link
-          #- name: waterfox
           - name: chromium
           - name: google-chrome
           - name: ungoogled-chromium
           - name: microsoft-edge
           - name: brave
-            platforms: linux/amd64
           - name: vivaldi
-            platforms: linux/amd64
           - name: opera
           - name: tor-browser
           - name: remmina
@@ -76,7 +71,6 @@ jobs:
     uses: ./.github/workflows/image_app.yml
     needs: build-base-intel
     strategy:
-      # Will build all images even if some fail.
       fail-fast: false
       matrix:
         include:
@@ -112,7 +106,6 @@ jobs:
     uses: ./.github/workflows/image_app.yml
     needs: build-base-nvidia
     strategy:
-      # Will build all images even if some fail.
       fail-fast: false
       matrix:
         include:
