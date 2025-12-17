@@ -52,7 +52,7 @@ jobs:
             dockerfile: Dockerfile.nvidia
           - name: desktop
             platforms: linux/amd64
-            with: Dockerfile.nvidia
+            dockerfile: Dockerfile.nvidea
     with:
       name: ${{ matrix.name }}
       flavor: nvidia
