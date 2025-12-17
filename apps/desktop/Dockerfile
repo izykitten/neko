@@ -53,7 +53,7 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
         SRC_URL="https://download.mozilla.org/?product=firefox-latest&os=linux64-aarch64&lang=en-US"; \
     fi; \
     if [ ! -z "${SRC_URL}" ]; then \
-        wget -O /tmp/firefox-setup.tar.xz "${SRC_URL}"; \
+        curl -fsSL -o /tmp/firefox-setup.tar.xz "${SRC_URL}"; \
         tar -xJf /tmp/firefox-setup.tar.xz -C /tmp; \
         mv /tmp/firefox /usr/lib/firefox; \
         rm -f /tmp/firefox-setup.tar.xz; \
@@ -75,7 +75,7 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     fi; \
     #
     # install Google Chrome
-    wget -O /tmp/google-chrome.deb "https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb"; \
+    curl -fsSL -o /tmp/google-chrome.deb "https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb"; \
     apt-get install -y --no-install-recommends /tmp/google-chrome.deb; \
     rm -f /tmp/google-chrome.deb; \
     #
@@ -89,8 +89,8 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     #
     # install Microsoft Edge
     API_URL="https://packages.microsoft.com/repos/edge/pool/main/m/microsoft-edge-stable/"; \
-    SRC_URL="${API_URL}$(wget -O - "${API_URL}" 2>/dev/null | sed -n 's/.*href="\([^"]*\).*/\1/p' | sort --version-sort | tail -1)"; \
-    wget -O /tmp/microsoft-edge.deb "${SRC_URL}"; \
+    SRC_URL="${API_URL}$(curl -fsSL "${API_URL}" | sed -n 's/.*href="\([^"]*\).*/\1/p' | sort --version-sort | tail -1)"; \
+    curl -fsSL -o /tmp/microsoft-edge.deb "${SRC_URL}"; \
     apt-get install -y --no-install-recommends /tmp/microsoft-edge.deb; \
     rm -f /tmp/microsoft-edge.deb; \
     #
@@ -105,15 +105,15 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
         apt-get install -y --no-install-recommends opera-stable; \
     elif [ "$ID" = "ubuntu" ] && [ "${ARCH}" = "amd64" ]; then \
         OPERA_BASE_URL="https://download3.operacdn.com/pub/opera/desktop/"; \
-        OPERA_VERSION="$(wget -O - "${OPERA_BASE_URL}" 2>/dev/null | sed -n 's/.*href=\"\([0-9][^\"]*\)\/\".*/\1/p' | sort --version-sort | tail -1)"; \
+        OPERA_VERSION="$(curl -fsSL "${OPERA_BASE_URL}" | sed -n 's/.*href=\"\([0-9][^\"]*\)\/\".*/\1/p' | sort --version-sort | tail -1)"; \
         OPERA_DEB_URL="${OPERA_BASE_URL}${OPERA_VERSION}/linux/opera-stable_${OPERA_VERSION}_amd64.deb"; \
-        wget -O /tmp/opera.deb "${OPERA_DEB_URL}"; \
+        curl -fsSL -o /tmp/opera.deb "${OPERA_DEB_URL}"; \
         apt-get install -y --no-install-recommends /tmp/opera.deb; \
         rm -f /tmp/opera.deb; \
     fi; \
     #
     # install Vivaldi
-    wget -O /tmp/vivaldi.deb "https://downloads.vivaldi.com/stable/vivaldi-stable_${ARCH}.deb"; \
+    curl -fsSL -o /tmp/vivaldi.deb "https://downloads.vivaldi.com/stable/vivaldi-stable_${ARCH}.deb"; \
     apt-get install -y --no-install-recommends /tmp/vivaldi.deb; \
     rm -f /tmp/vivaldi.deb; \
     #
@@ -133,8 +133,8 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     #
     # install Ungoogled Chromium
     API_URL="https://api.github.com/repos/macchrome/linchrome/releases/latest"; \
-    SRC_URL="$(wget -O - "${API_URL}" 2>/dev/null | jq -r "[.assets[] | select(.browser_download_url | contains(\"tar.xz\"))][-1] | .browser_download_url")"; \
-    wget -O /tmp/chromium.tar.xz "${SRC_URL}"; \
+    SRC_URL="$(curl -fsSL "${API_URL}" | jq -r "[.assets[] | select(.browser_download_url | contains(\"tar.xz\"))][-1] | .browser_download_url")"; \
+    curl -fsSL -o /tmp/chromium.tar.xz "${SRC_URL}"; \
     tar -xJf /tmp/chromium.tar.xz -C /tmp; \
     rm -f /usr/lib/ungoogled-chromium; \
     mv /tmp/ungoogled-chromium_* /usr/lib/ungoogled-chromium; \
@@ -144,10 +144,15 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     rm -f /tmp/chromium.tar.xz; \
     #
     # install PIA VPN
-    wget -O /tmp/pia-linux.run "https://www.privateinternetaccess.com/installer/x/download_installer_linux"; \
-    chmod +x /tmp/pia-linux.run; \
-    /tmp/pia-linux.run --skip-license --mode unattended; \
-    rm -f /tmp/pia-linux.run; \
+    PIA_OUT="/tmp/pia-linux.run"; \
+    curl -fsSL -o "$PIA_OUT" "https://www.privateinternetaccess.com/installer/download_installer_linux"; \
+    if [ -f "$PIA_OUT" ] && head -n1 "$PIA_OUT" | grep -qE '^#!/'; then \
+        chmod +x "$PIA_OUT"; \
+        "$PIA_OUT" --skip-license --mode unattended || true; \
+    else \
+        echo "PIA installer download failed or returned unexpected content" >&2; \
+    fi; \
+    rm -f "$PIA_OUT"; \
     #
     # clean up (keep apt cache for BuildKit)
     apt-get --purge autoremove -y xz-utils jq bzip2 file
