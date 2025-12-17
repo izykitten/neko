@@ -26,140 +26,110 @@ jobs:
   build-base:
     name: Base Image
     uses: ./.github/workflows/image_base.yml
-    strategy:
-      matrix:
-        include:
-          - flavor: ""
-            dockerfile: Dockerfile
-          - flavor: intel
-            dockerfile: Dockerfile.intel
-          - flavor: nvidia
-            dockerfile: Dockerfile.nvidia
     with:
-      flavor: ${{ matrix.flavor }}
       platforms: linux/amd64
-      dockerfile: ${{ matrix.dockerfile }}
     secrets: inherit
 
   build-app:
-    name: App Image (${{ matrix.name }}${{ matrix.flavor_suffix }})
+    name: App Image
     uses: ./.github/workflows/image_app.yml
     needs: build-base
     strategy:
+      # Will build all images even if some fail.
       fail-fast: false
       matrix:
         include:
-          # Default flavor
           - name: firefox
-            flavor: ""
-            flavor_suffix: ""
+          # Temporarily disabled due to Cloudflare blocked download link
+          #- name: waterfox
           - name: chromium
-            flavor: ""
-            flavor_suffix: ""
           - name: google-chrome
-            flavor: ""
-            flavor_suffix: ""
           - name: ungoogled-chromium
-            flavor: ""
-            flavor_suffix: ""
           - name: microsoft-edge
-            flavor: ""
-            flavor_suffix: ""
           - name: brave
-            flavor: ""
-            flavor_suffix: ""
+            platforms: linux/amd64
           - name: vivaldi
-            flavor: ""
-            flavor_suffix: ""
+            platforms: linux/amd64
           - name: opera
-            flavor: ""
-            flavor_suffix: ""
           - name: tor-browser
-            flavor: ""
-            flavor_suffix: ""
           - name: remmina
-            flavor: ""
-            flavor_suffix: ""
           - name: vlc
-            flavor: ""
-            flavor_suffix: ""
           - name: xfce
-            flavor: ""
-            flavor_suffix: ""
           - name: kde
-            flavor: ""
-            flavor_suffix: ""
           - name: desktop
-            flavor: ""
-            flavor_suffix: ""
-          # Intel flavor
+    with:
+      name: ${{ matrix.name }}
+      platforms: ${{ matrix.platforms }}
+    secrets: inherit
+
+  build-base-intel:
+    name: Base Image (intel)
+    uses: ./.github/workflows/image_base.yml
+    with:
+      flavor: intel
+      platforms: linux/amd64
+      dockerfile: Dockerfile.intel
+    secrets: inherit
+
+  build-app-intel:
+    name: App Image (intel)
+    uses: ./.github/workflows/image_app.yml
+    needs: build-base-intel
+    strategy:
+      # Will build all images even if some fail.
+      fail-fast: false
+      matrix:
+        include:
           - name: chromium
-            flavor: intel
-            flavor_suffix: ", intel"
           - name: google-chrome
-            flavor: intel
-            flavor_suffix: ", intel"
           - name: ungoogled-chromium
-            flavor: intel
-            flavor_suffix: ", intel"
           - name: microsoft-edge
-            flavor: intel
-            flavor_suffix: ", intel"
           - name: brave
-            flavor: intel
-            flavor_suffix: ", intel"
           - name: vivaldi
-            flavor: intel
-            flavor_suffix: ", intel"
           - name: opera
-            flavor: intel
-            flavor_suffix: ", intel"
           - name: tor-browser
-            flavor: intel
-            flavor_suffix: ", intel"
           - name: remmina
-            flavor: intel
-            flavor_suffix: ", intel"
           - name: vlc
-            flavor: intel
-            flavor_suffix: ", intel"
           - name: xfce
-            flavor: intel
-            flavor_suffix: ", intel"
           - name: kde
-            flavor: intel
-            flavor_suffix: ", intel"
           - name: desktop
-            flavor: intel
-            flavor_suffix: ", intel"
-          # Nvidia flavor
+    with:
+      name: ${{ matrix.name }}
+      flavor: intel
+    secrets: inherit
+
+  build-base-nvidia:
+    name: Base Image (nvidia)
+    uses: ./.github/workflows/image_base.yml
+    with:
+      flavor: nvidia
+      platforms: linux/amd64
+      dockerfile: Dockerfile.nvidia
+    secrets: inherit
+
+  build-app-nvidia:
+    name: App Image (nvidia)
+    uses: ./.github/workflows/image_app.yml
+    needs: build-base-nvidia
+    strategy:
+      # Will build all images even if some fail.
+      fail-fast: false
+      matrix:
+        include:
           - name: firefox
-            flavor: nvidia
-            flavor_suffix: ", nvidia"
             dockerfile: Dockerfile.nvidia
           - name: brave
-            flavor: nvidia
-            flavor_suffix: ", nvidia"
             dockerfile: Dockerfile.nvidia
           - name: chromium
-            flavor: nvidia
-            flavor_suffix: ", nvidia"
             dockerfile: Dockerfile.nvidia
           - name: google-chrome
-            flavor: nvidia
-            flavor_suffix: ", nvidia"
             dockerfile: Dockerfile.nvidia
           - name: microsoft-edge
-            flavor: nvidia
-            flavor_suffix: ", nvidia"
             dockerfile: Dockerfile.nvidia
           - name: desktop
-            flavor: nvidia
-            flavor_suffix: ", nvidia"
             dockerfile: Dockerfile
     with:
       name: ${{ matrix.name }}
-      flavor: ${{ matrix.flavor }}
-      platforms: linux/amd64
-      dockerfile: ${{ matrix.dockerfile || 'Dockerfile' }}
+      flavor: nvidia
+      dockerfile: ${{ matrix.dockerfile }}
     secrets: inherit
