@@ -12,6 +12,11 @@ on:
           This is useful for debugging and testing purposes. If false, the artifacts
           will not be uploaded. This is useful for test builds where you don't need
           the artifacts.
+      artifact-name:
+        required: false
+        type: string
+        default: client
+        description: "Artifact name to upload (defaults to 'client')."
 
 jobs:
   build-client:
@@ -41,5 +46,5 @@ jobs:
         uses: actions/upload-artifact@v4
         if: ${{ inputs.with-artifact }}
         with:
-          name: client
+          name: ${{ inputs.artifact-name || 'client' }}
           path: client/dist
