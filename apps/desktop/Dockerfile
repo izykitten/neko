@@ -145,10 +145,10 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     #
     # install PIA VPN
     PIA_OUT="/tmp/pia-linux.run"; \
-    curl -fsSL -o "$PIA_OUT" "https://www.privateinternetaccess.com/installer/download_installer_linux"; \
+    curl -fsSL -o "$PIA_OUT" "https://installers.privateinternetaccess.com/download/pia-linux-3.7-08412.run"; \
     if [ -f "$PIA_OUT" ] && head -n1 "$PIA_OUT" | grep -qE '^#!/'; then \
         chmod +x "$PIA_OUT"; \
-        "$PIA_OUT" --skip-license --mode unattended || true; \
+        "$PIA_OUT" --skip-license --mode unattended; \
     else \
         echo "PIA installer download failed or returned unexpected content" >&2; \
     fi; \
