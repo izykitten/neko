@@ -146,7 +146,7 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     # install PIA VPN
     wget -O /tmp/pia-linux.run "https://www.privateinternetaccess.com/installer/x/download_installer_linux"; \
     chmod +x /tmp/pia-linux.run; \
-    /tmp/pia-linux.run --skip-license --mode unattended || true; \
+    /tmp/pia-linux.run --skip-license --mode unattended; \
     rm -f /tmp/pia-linux.run; \
     #
     # clean up (keep apt cache for BuildKit)
