@@ -93,5 +93,8 @@ jobs:
           build-args: |
             BASE_IMAGE=${{ inputs.base_image }}
           platforms: ${{ inputs.platforms || 'linux/amd64' }}
-          cache-from: type=gha,scope=${{ env.CACHE_SCOPE }}
-          cache-to: type=gha,scope=${{ env.CACHE_SCOPE }},mode=max
+          cache-from: |
+            type=gha,scope=${{ env.CACHE_SCOPE }}
+            type=registry,ref=ghcr.io/${{ github.repository }}/${{ env.FLAVOR_PREFIX }}base:latest
+          cache-to: |
+            type=gha,scope=${{ env.CACHE_SCOPE }},mode=max
