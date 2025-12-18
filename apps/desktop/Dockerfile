@@ -175,8 +175,7 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     fi; \
     if [ -n "$JELLYFIN_DIST" ]; then \
         JELLYFIN_VERSION="$(curl -fsSL https://api.github.com/repos/jellyfin/jellyfin-desktop/releases/latest | jq -r '.tag_name')"; \
-        JELLYFIN_URL="https://github.com/jellyfin/jellyfin-desktop/releases/download/${JELLYFIN_VERSION}/jellyfin-media-player_${JELLYFIN_VERSION#v}-1_amd64-${JELLYFIN_DIST}.deb"; \
-        curl -fsSL -o /tmp/jellyfin.deb "$JELLYFIN_URL"; \
+        curl -fsSL -o /tmp/jellyfin.deb "https://github.com/jellyfin/jellyfin-desktop/releases/download/${JELLYFIN_VERSION}/jellyfin-media-player_${JELLYFIN_VERSION#v}-${JELLYFIN_DIST}.deb"; \
         apt-get install -y --no-install-recommends /tmp/jellyfin.deb; \
         rm -f /tmp/jellyfin.deb; \
     fi; \
