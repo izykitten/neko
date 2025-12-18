@@ -144,28 +144,6 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     chmod 4755 /usr/lib/ungoogled-chromium/chrome-sandbox; \
     rm -f /tmp/chromium.tar.xz; \
     #
-    # install PIA VPN (manual extraction - installer requires non-root and systemd)
-    PIA_OUT="/tmp/pia-linux.run"; \
-    PIA_EXTRACT="/tmp/pia-extract"; \
-    curl -fsSL -o "$PIA_OUT" "https://installers.privateinternetaccess.com/download/pia-linux-3.7-08412.run"; \
-    chmod +x "$PIA_OUT"; \
-    "$PIA_OUT" --noexec --target "$PIA_EXTRACT"; \
-    # Install PIA files manually (skip service setup since no systemd in build)
-    mkdir -p /opt/piavpn/bin /opt/piavpn/lib /opt/piavpn/var /opt/piavpn/etc; \
-    cp -rf "$PIA_EXTRACT/piafiles/"* /opt/piavpn/; \
-    cp "$PIA_EXTRACT/installfiles/"*.sh /opt/piavpn/bin/; \
-    chmod +x /opt/piavpn/bin/*.sh; \
-    # Create piavpn group and set permissions
-    groupadd -f piavpn; \
-    groupadd -f piahnsd; \
-    # Install icon and desktop entry
-    cp "$PIA_EXTRACT/installfiles/app-icon.png" /usr/share/pixmaps/piavpn.png; \
-    cp "$PIA_EXTRACT/installfiles/piavpn.desktop" /usr/share/applications/piavpn.desktop; \
-    # Create symlink for piactl
-    ln -sf /opt/piavpn/bin/piactl /usr/local/bin/piactl; \
-    # Clean up
-    rm -rf "$PIA_OUT" "$PIA_EXTRACT"; \
-    #
     # install Jellyfin Desktop
     . /etc/os-release; \
     if [ "$ID" = "debian" ]; then \
