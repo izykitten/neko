@@ -144,14 +144,42 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     chmod 4755 /usr/lib/ungoogled-chromium/chrome-sandbox; \
     rm -f /tmp/chromium.tar.xz; \
     #
-    # install PIA VPN
+    # install PIA VPN (manual extraction - installer requires non-root and systemd)
     PIA_OUT="/tmp/pia-linux.run"; \
+    PIA_EXTRACT="/tmp/pia-extract"; \
     curl -fsSL -o "$PIA_OUT" "https://installers.privateinternetaccess.com/download/pia-linux-3.7-08412.run"; \
-    if [ -f "$PIA_OUT" ] && head -n1 "$PIA_OUT" | grep -qE '^#!/'; then \
-        chmod +x "$PIA_OUT"; \
-        "$PIA_OUT" --accept --silent || true; \
+    chmod +x "$PIA_OUT"; \
+    "$PIA_OUT" --noexec --target "$PIA_EXTRACT"; \
+    # Install PIA files manually (skip service setup since no systemd in build)
+    mkdir -p /opt/piavpn/bin /opt/piavpn/lib /opt/piavpn/var /opt/piavpn/etc; \
+    cp -rf "$PIA_EXTRACT/piafiles/"* /opt/piavpn/; \
+    cp "$PIA_EXTRACT/installfiles/"*.sh /opt/piavpn/bin/; \
+    chmod +x /opt/piavpn/bin/*.sh; \
+    # Create piavpn group and set permissions
+    groupadd -f piavpn; \
+    groupadd -f piahnsd; \
+    # Install icon and desktop entry
+    cp "$PIA_EXTRACT/installfiles/app-icon.png" /usr/share/pixmaps/piavpn.png; \
+    cp "$PIA_EXTRACT/installfiles/piavpn.desktop" /usr/share/applications/piavpn.desktop; \
+    # Create symlink for piactl
+    ln -sf /opt/piavpn/bin/piactl /usr/local/bin/piactl; \
+    # Clean up
+    rm -rf "$PIA_OUT" "$PIA_EXTRACT"; \
+    #
+    # install Jellyfin Desktop
+    . /etc/os-release; \
+    if [ "$ID" = "debian" ]; then \
+        JELLYFIN_DIST="trixie"; \
+    elif [ "$ID" = "ubuntu" ]; then \
+        JELLYFIN_DIST="noble"; \
     fi; \
-    rm -f "$PIA_OUT"; \
+    if [ ! -z "$JELLYFIN_DIST" ]; then \
+        JELLYFIN_VERSION="$(curl -fsSL https://api.github.com/repos/jellyfin/jellyfin-media-player/releases/latest | jq -r '.tag_name')"; \
+        JELLYFIN_URL="https://github.com/jellyfin/jellyfin-media-player/releases/download/${JELLYFIN_VERSION}/jellyfin-media-player_${JELLYFIN_VERSION#v}_${JELLYFIN_DIST}_amd64.deb"; \
+        curl -fsSL -o /tmp/jellyfin.deb "$JELLYFIN_URL"; \
+        apt-get install -y --no-install-recommends /tmp/jellyfin.deb; \
+        rm -f /tmp/jellyfin.deb; \
+    fi; \
     #
     # clean up (keep apt cache for BuildKit)
     apt-get --purge autoremove -y xz-utils jq bzip2 file
@@ -159,8 +187,9 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
 #
 # copy configuration files
 RUN mkdir -p /etc/neko/supervisord
-COPY supervisord.conf /etc/neko/supervisord/kde.conf
+COPY supervisord.kde.conf /etc/neko/supervisord/kde.conf
 RUN mv /etc/neko/supervisord.dbus.conf /etc/neko/supervisord/dbus.conf
 COPY cleanup-locks.sh /usr/local/bin/cleanup-locks.sh
 COPY supervisord.cleanup.conf /etc/neko/supervisord/cleanup.conf
+COPY supervisord.piavpn.conf /etc/neko/supervisord/piavpn.conf
 RUN chmod +x /usr/local/bin/cleanup-locks.sh
