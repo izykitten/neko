@@ -7,24 +7,19 @@ COPY ./widevinecdm.sh /widevine.sh
 #
 # install neko chromium
 RUN --mount=type=cache,target=/var/cache/apt,sharing=locked --mount=type=cache,target=/var/lib/apt,sharing=locked \
-    set -eux; \
-    apt-get update; \
-    apt-get install -y --no-install-recommends chromium chromium-common chromium-sandbox openbox; \
-    #
-    # install widevine module (only for amd64)
-    CHROMIUM_DIR="/usr/lib/chromium"; \
-    ARCH=$(dpkg --print-architecture); \
-    if [ "${ARCH}" = "amd64" ]; then \
-        apt-get install -y --no-install-recommends xz-utils; \
-        ./widevine.sh "${CHROMIUM_DIR}/WidevineCdm"; \
-        rm -f /widevine.sh; \
-        apt-get --purge autoremove -y xz-utils; \
+    . /etc/os-release && \
+    if [ "$ID" = "debian" ]; then \
+        echo "deb http://deb.debian.org/debian ${VERSION_CODENAME} main" >> /etc/apt/sources.list && \
+        apt-get update && \
+        apt-get install -y --no-install-recommends chromium chromium-common chromium-sandbox; \
+    elif [ "$ID" = "ubuntu" ]; then \
+        apt-get update && \
+        apt-get install -y --no-install-recommends chromium-browser openbox || apt-get install -y --no-install-recommends chromium openbox; \
     else \
-        echo "Widevine is not supported on ${ARCH}"; \
-    fi; \
-    #
-    # clean up
-    apt-get clean -y
+        apt-get update && \
+        apt-get install -y --no-install-recommends chromium chromium-common chromium-sandbox; \
+    fi && \
+    apt-get --purge autoremove -y xz-utils
 
 #
 # copy configuation files

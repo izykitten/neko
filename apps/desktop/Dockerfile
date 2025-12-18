@@ -17,7 +17,8 @@ RUN apt-get update && \
 RUN --mount=type=cache,target=/var/cache/apt,sharing=locked --mount=type=cache,target=/var/lib/apt,sharing=locked \
     set -eux; \
     apt-get update; \
-    apt-get install -y --no-install-recommends kde-full kwin-x11 sudo; \
+    apt-get install -y --no-install-recommends kde-full kwin-x11 sudo \
+    konsole; \
     #
     # add user to sudoers
     usermod -aG sudo neko; \
@@ -143,16 +144,12 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     chmod 4755 /usr/lib/ungoogled-chromium/chrome-sandbox; \
     rm -f /tmp/chromium.tar.xz; \
     #
-    # install PIA VPN (optional - may fail in headless environments)
+    # install PIA VPN
     PIA_OUT="/tmp/pia-linux.run"; \
     curl -fsSL -o "$PIA_OUT" "https://installers.privateinternetaccess.com/download/pia-linux-3.7-08412.run"; \
     if [ -f "$PIA_OUT" ] && head -n1 "$PIA_OUT" | grep -qE '^#!/'; then \
         chmod +x "$PIA_OUT"; \
-        if ! "$PIA_OUT" --skip-license --mode unattended; then \
-            echo "PIA installer failed (may require GUI/interactive setup) - skipping" >&2; \
-        fi; \
-    else \
-        echo "PIA installer download failed or returned unexpected content - skipping" >&2; \
+        "$PIA_OUT" --accept --silent || true; \
     fi; \
     rm -f "$PIA_OUT"; \
     #
