@@ -17,7 +17,7 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked --mount=type=cache,t
     apt-get install -y --no-install-recommends \
         wget ca-certificates supervisor \
         pulseaudio dbus-x11 xserver-xorg-video-dummy \
-        libcairo2 libxcb1 libxrandr2 libxv1 libopus0 libvpx9 libx264-164 libvo-aacenc0 librtmp1 libxcvt0 \
+        libcairo2 libxcb1 libxrandr2 libxv1 libopus0 libvpx9 libx264-164 librtmp1 libxcvt0 \
         #
         # needed for profile upload preStop hook
         zip curl \
@@ -30,9 +30,14 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked --mount=type=cache,t
         gstreamer1.0-plugins-bad gstreamer1.0-plugins-ugly \
         gstreamer1.0-pulseaudio; \
     #
-    # create a non-root user
-    groupadd --gid $USER_GID $USERNAME; \
-    useradd --uid $USER_UID --gid $USERNAME --shell /bin/bash --create-home $USERNAME; \
+    # rename default user with UID $USER_GID to $USERNAME if it exists, else create $USERNAME
+    if id -u $USER_GID &>/dev/null; then \
+        usermod -l $USERNAME -d /home/$USERNAME -m $(getent passwd $USER_GID | cut -d: -f1); \
+        groupmod -n $USERNAME $(getent group $USER_GID | cut -d: -f1); \
+    else \
+        groupadd --gid $USER_GID $USERNAME; \
+        useradd --uid $USER_UID --gid $USERNAME --shell /bin/bash --create-home $USERNAME; \
+    fi; \
     adduser $USERNAME audio; \
     adduser $USERNAME video; \
     adduser $USERNAME pulse; \
