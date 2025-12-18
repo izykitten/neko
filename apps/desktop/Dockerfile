@@ -178,10 +178,10 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
         curl -fsSL -o /tmp/jellyfin.deb "https://github.com/jellyfin/jellyfin-desktop/releases/download/${JELLYFIN_VERSION}/jellyfin-media-player_${JELLYFIN_VERSION#v}-${JELLYFIN_DIST}.deb"; \
         apt-get install -y --no-install-recommends /tmp/jellyfin.deb; \
         rm -f /tmp/jellyfin.deb; \
-    fi; \
+    fi
     #
-    # clean up (keep apt cache for BuildKit)
-    apt-get --purge autoremove -y xz-utils jq bzip2 file
+    # clean up
+    #apt-get --purge autoremove -y xz-utils jq bzip2 file
 
 #
 # copy configuration files
