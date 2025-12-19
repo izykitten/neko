@@ -168,5 +168,4 @@ COPY supervisord.kde.conf /etc/neko/supervisord/kde.conf
 RUN mv /etc/neko/supervisord.dbus.conf /etc/neko/supervisord/dbus.conf
 COPY cleanup-locks.sh /usr/local/bin/cleanup-locks.sh
 COPY supervisord.cleanup.conf /etc/neko/supervisord/cleanup.conf
-COPY supervisord.piavpn.conf /etc/neko/supervisord/piavpn.conf
 RUN chmod +x /usr/local/bin/cleanup-locks.sh
