@@ -28,7 +28,7 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked --mount=type=cache,t
         # gst
         gstreamer1.0-plugins-base gstreamer1.0-plugins-good \
         gstreamer1.0-plugins-bad gstreamer1.0-plugins-ugly \
-        gstreamer1.0-pulseaudio; \
+        gstreamer1.0-pulseaudio gstreamer1.0-vaapi; \
     #
     # rename default user with UID $USER_GID to $USERNAME if it exists, else create $USERNAME
     if id -u $USER_GID &>/dev/null; then \
