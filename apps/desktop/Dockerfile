@@ -8,9 +8,7 @@ SHELL ["/bin/bash", "-c"]
 
 # Install systemd
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends systemd systemd-sysv && \
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/*
+    apt-get install -y --no-install-recommends systemd systemd-sysv
 
 #
 # install kde
