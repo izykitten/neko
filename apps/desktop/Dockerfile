@@ -116,8 +116,34 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     apt-get install -y --no-install-recommends /tmp/vivaldi.deb; \
     rm -f /tmp/vivaldi.deb; \
     #
-    # install VLC
+    # install VLC with full codec support
     apt-get install -y --no-install-recommends vlc; \
+    #
+    # install comprehensive codec support
+    . /etc/os-release; \
+    apt-get install -y --no-install-recommends \
+        ffmpeg \
+        libavcodec-extra \
+        gstreamer1.0-plugins-base \
+        gstreamer1.0-plugins-good \
+        gstreamer1.0-plugins-bad \
+        gstreamer1.0-plugins-ugly \
+        gstreamer1.0-libav \
+        gstreamer1.0-tools \
+        gstreamer1.0-vaapi \
+        libdvdread8 \
+        libdvdnav4 \
+        libbluray2 \
+        libaacs0 \
+        libfdk-aac2; \
+    if [ "$ID" = "debian" ]; then \
+        apt-get install -y --no-install-recommends libdvd-pkg; \
+        dpkg-reconfigure -f noninteractive libdvd-pkg; \
+    elif [ "$ID" = "ubuntu" ]; then \
+        apt-get install -y --no-install-recommends \
+            libavcodec-extra \
+            gstreamer1.0-fluendo-mp3; \
+    fi; \
     #
     # install Remmina with RDP and VNC support only
     apt-get install -y --no-install-recommends remmina remmina-plugin-rdp remmina-plugin-vnc; \
