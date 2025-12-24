@@ -139,10 +139,6 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     if [ "$ID" = "debian" ]; then \
         apt-get install -y --no-install-recommends libdvd-pkg; \
         dpkg-reconfigure -f noninteractive libdvd-pkg; \
-    elif [ "$ID" = "ubuntu" ]; then \
-        apt-get install -y --no-install-recommends \
-            libavcodec-extra \
-            gstreamer1.0-fluendo-mp3; \
     fi; \
     #
     # install Remmina with RDP and VNC support only
