@@ -122,6 +122,17 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     # install Remmina with RDP and VNC support only
     apt-get install -y --no-install-recommends remmina remmina-plugin-rdp remmina-plugin-vnc; \
     #
+    # install OBS Studio (official PPA for Ubuntu, package repo for Debian)
+    . /etc/os-release; \
+    if [ "$ID" = "ubuntu" ]; then \
+        apt-get install -y --no-install-recommends software-properties-common; \
+        add-apt-repository -y ppa:obsproject/obs-studio; \
+        apt-get update; \
+        apt-get install -y --no-install-recommends obs-studio; \
+    elif [ "$ID" = "debian" ]; then \
+        apt-get install -y --no-install-recommends obs-studio; \
+    fi; \
+    #
     # install Tor Browser
     DOWNLOAD_URI="$(curl -s -N https://www.torproject.org/download/ | grep -Po -m 1 '(?=(dist/torbrowser)).*(?<=.tar.xz)')"; \
     curl -sSL -o /tmp/tor.tar.xz "https://www.torproject.org/$DOWNLOAD_URI"; \
